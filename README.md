@@ -7,11 +7,21 @@ on my Yoga 370
 Installation
 ------------
 
+Install libqmi-utils & libmbim-utils
+
+    sudo apt-get install -y libqmi-utils libmbim-utils
+
+Install the scripts in /etc/network
+
     sudo install -o root -g root wwan.sh /etc/network/wwan.sh
     sudo install -o root -g root wwan_parse_ip_info /etc/network/wwan_parse_ip_info
 
-In /etc/network/interfaces
+Add the following to /etc/network/interfaces (your interface may be something like wwp0s20f0u2i12 if predictable network interface names are enabled)
 
     iface wwan0 inet manual
      pre-up /etc/network/wwan.sh start
      pre-down /etc/network/wwan.sh stop
+
+Bring up the wwan interface
+
+    ifup wwan0
