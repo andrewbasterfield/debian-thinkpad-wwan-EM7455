@@ -1,0 +1,88 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my $device;
+my $proto;
+my $data = {};
+
+my $interface = $ARGV[0];
+
+while (my $line = <STDIN>) {
+  chomp($line);
+
+  if ($line =~ m/^\[(\S+)\] (IPv\d) configuration available/) {
+    $device = $1;
+    $proto = $2;
+  } elsif ($line =~ m/^\[(\S+)\]/) {
+    undef $proto;
+  } elsif ($device && $proto) {
+    
+    if ($line =~ m/\s+(.*):\s'(.*)'$/) {
+      my $val = $2;
+      if ($1 =~ m/^(\S+)\s*\[(\d+)\]$/) {
+        $data->{$device}->{$proto}->{$1} = [] unless defined $data->{$device}->{$proto}->{$1};
+        push @{$data->{$device}->{$proto}->{$1}}, $val;
+      } else {
+        $data->{$device}->{$proto}->{$1} = $val;
+      }
+    }
+  }
+}
+
+my @ips;
+my @gateways;
+my @mtus;
+my @dns;
+
+foreach my $if (sort keys %$data) {
+  my $data = $data->{$if};
+  foreach my $proto (sort keys %$data) {
+    my $data = $data->{$proto};
+    foreach my $key (sort keys %$data) {
+      my $data = $data->{$key};
+      
+      my $vals;
+      if (ref $data eq 'ARRAY') {
+        $vals = join(',',@$data);
+      } else {      
+        $vals = $data;
+      }
+      
+      foreach my $val (split(/,/,$vals)) {
+        if ($key eq "IP") {
+          push @ips, $val;
+        }
+        if ($key eq "Gateway") {
+          push @gateways, $val;
+        }
+        if ($key eq "MTU") {
+          push @mtus, $val;
+        }
+        if ($key eq "DNS") {
+          push @dns, $val;
+        }
+      }
+    }
+  }
+}
+
+foreach my $ip (@ips) {
+  printf "ip address add %s dev %s\n", $ip, $interface;
+}
+
+foreach my $mtu (@mtus) {
+  printf "ip link set dev %s mtu %s\n", $interface, $mtu;
+}
+
+printf "ip link set dev %s up\n", $interface;
+
+foreach my $gateway (@gateways) {
+  printf "ip route add default via %s metric 1000\n", $gateway;
+  foreach my $dns (@dns) {
+    printf "ip route add %s via %s\n", $dns, $gateway;
+  }
+}
+
+printf "cat <<EOF | /sbin/resolvconf -a %s\n%s\nEOF\n", $interface, join("\n", map { "nameserver $_" } @dns);
