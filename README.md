@@ -1,7 +1,7 @@
 This is what I needed in order to support my wwan interface (Sierra Wireless EM7455)
 on my Yoga 370
 
-* wwan.sh: script to bring up or down th einterface e.g. wwan.sh up or wwan.sh down
+* wwan.sh: script to bring up or down the interface e.g. wwan.sh up or wwan.sh down
 * wwan_parse_ip_info: perl script to parse output of mbimcli --query-ip-configuration and generate shell commands to configure wwan device
 
 Installation
