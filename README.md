@@ -7,12 +7,15 @@ on my Yoga 370
 Installation
 ------------
 
+`
 sudo install -o root -g root wwan.sh /etc/network/wwan.sh
 sudo install -o root -g root wwan_parse_ip_info /etc/network/wwan_parse_ip_info
+`
 
 In /etc/network/interfaces
 
- iface wwan0 inet manual
-  pre-up /etc/network/wwan.sh start
-  pre-down /etc/network/wwan.sh stop
-
+`
+iface wwan0 inet manual
+ pre-up /etc/network/wwan.sh start
+ pre-down /etc/network/wwan.sh stop
+`
