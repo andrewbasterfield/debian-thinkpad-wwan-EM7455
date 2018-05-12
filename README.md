@@ -60,7 +60,11 @@ mbimcli --query-ip-configuration and generate suitable shell script to set
 up the interface (at least for IPv4, I haven't been able to see the output
 of mbimcli --query-ip-configuration for IPv6.
 
-    ifup wlan0
+This is taken care of by wwan.sh so you should be able to just do
+
+    sudo ifup wlan0
+
+and all being well the interface should come up and get an IP address.
 
 [https://wiki.archlinux.org/index.php/ThinkPad_mobile_internet]
 [https://www.kernel.org/doc/Documentation/networking/cdc_mbim.txt]
