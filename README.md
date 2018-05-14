@@ -58,11 +58,11 @@ automatically, and I found a DHCP client on the the wwan interface does not
 help. Hence the script wwan_parse_ip_info will parse the output of
 mbimcli --query-ip-configuration and generate suitable shell script to set
 up the interface (at least for IPv4, I haven't been able to see the output
-of mbimcli --query-ip-configuration for IPv6.
+of mbimcli --query-ip-configuration for IPv6).
 
 This is taken care of by wwan.sh so you should be able to just do
 
-    sudo ifup wlan0
+    sudo ifup wwan0
 
 and all being well the interface should come up and get an IP address.
 
