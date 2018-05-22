@@ -17,6 +17,7 @@ case $1 in
   stop)
     bash mbim-network $CTRL_DEVICE stop || true
     ip link set dev $WWAN_INTERFACE down
+    ip addr flush dev $WWAN_INTERFACE
     resolvconf -d $WWAN_INTERFACE || true
   ;;
 esac
